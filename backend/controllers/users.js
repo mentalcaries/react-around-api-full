@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const { celebrate, Joi } = require('celebrate');
 const User = require('../models/user');
 
 const getUsers = (req, res) => {
