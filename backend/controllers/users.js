@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const { reset } = require('nodemon');
 const User = require('../models/user');
 
 const getUsers = (req, res) => {
@@ -24,26 +25,26 @@ const getUserById = (req, res) => {
 // Hash password
 
 const createUser = (req, res) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
+  const { name, about, avatar, email, password } = req.body;
   if (!email || !password) {
     return res.status(400).send({ message: 'Missing email or password' });
   }
 
-  return bcrypt.hash(password, 10, (err, hash) => User.create({
-    name,
-    about,
-    avatar,
-    email,
-    password: hash,
-  })
-    .then((user) => res.send({ data: user }))
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid user data' });
-      }
-    }));
+  return bcrypt.hash(password, 10, (err, hash) =>
+    User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    })
+      .then((user) => res.send({ data: user }))
+      .catch((error) => {
+        if (error.name === 'ValidationError') {
+          res.status(400).send({ message: 'Invalid user data' });
+        }
+      })
+  );
 };
 
 const updateProfile = (req, res) => {
@@ -74,10 +75,24 @@ const updateAvatar = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  // find user by email
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      console.log(user);
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateProfile,
   updateAvatar,
+  login,
 };
