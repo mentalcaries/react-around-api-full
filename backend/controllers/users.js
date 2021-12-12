@@ -30,7 +30,7 @@ const createUser = (req, res) => {
     return res.status(400).send({ message: 'Missing email or password' });
   }
 
-  return bcrypt.hash(password, 10, (err, hash) =>
+  return bcrypt.hash(password, 10, (err, hash) => {
     User.create({
       name,
       about,
@@ -43,8 +43,8 @@ const createUser = (req, res) => {
         if (error.name === 'ValidationError') {
           res.status(400).send({ message: 'Invalid user data' });
         }
-      })
-  );
+      });
+  });
 };
 
 const updateProfile = (req, res) => {

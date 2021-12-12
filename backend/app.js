@@ -10,6 +10,8 @@ app.use(express.json());
 const { PORT = 3000 } = process.env;
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const { login } = require('./controllers/users');
+
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
@@ -26,6 +28,12 @@ app.use((req, res, next) => {
 app.use('/cards', cardRouter);
 
 app.use('/users', userRouter);
+
+app.post('/signin', (res, req) => {
+  login(res, req);
+});
+
+// app.post('/signup', createUser);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
