@@ -12,6 +12,7 @@ const { PORT = 3000 } = process.env;
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 
   next();
 });
+
 app.use('/cards', cardRouter);
 
 app.use('/users', userRouter);

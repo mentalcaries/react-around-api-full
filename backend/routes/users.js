@@ -4,7 +4,6 @@ const router = express.Router();
 const {
   getUsers,
   getUserById,
-  createUser,
   updateProfile,
   updateAvatar,
 } = require('../controllers/users');
@@ -22,6 +21,8 @@ router.get('/:id', getUserById);
 //     password: Joi.string().required().min(8),
 //   }),
 // }), createUser);
+
+
 
 router.patch('/me', updateProfile);
 

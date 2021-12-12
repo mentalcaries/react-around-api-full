@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const { reset } = require('nodemon');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
@@ -26,7 +25,9 @@ const getUserById = (req, res) => {
 // Hash password
 
 const createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
   if (!email || !password) {
     return res.status(400).send({ message: 'Missing email or password' });
   }
