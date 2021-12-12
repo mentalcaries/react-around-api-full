@@ -29,6 +29,7 @@
     "eslint-plugin-import": "^2.25.3",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.12",
     "validator": "^13.7.0"
   }

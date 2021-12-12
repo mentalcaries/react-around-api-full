@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { reset } = require('nodemon');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const getUsers = (req, res) => {
@@ -81,7 +82,9 @@ const login = (req, res) => {
   // find user by email
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user);
+      // console.log(user);
+      const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+      res.send({ token });
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });

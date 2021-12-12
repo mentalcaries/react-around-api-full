@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const { celebrate, Joi } = require('celebrate');
 
 const app = express();
 app.use(helmet());
@@ -10,8 +11,7 @@ app.use(express.json());
 const { PORT = 3000 } = process.env;
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-const { login } = require('./controllers/users');
-
+const { login, createUser } = require('./controllers/users');
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
@@ -33,7 +33,15 @@ app.post('/signin', (res, req) => {
   login(res, req);
 });
 
-// app.post('/signup', createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().uri(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
