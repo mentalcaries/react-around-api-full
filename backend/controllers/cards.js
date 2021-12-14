@@ -23,16 +23,25 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove({ _id: req.params.cardId })
-    .orFail()
-    .then((cardData) => res.send({ data: cardData }))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'No card with that ID found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid data request' });
-      }
-    });
+  // TO DO user id must  equal card owner id
+  // else 'user not authorized'
+  // need id of current user and card owner id.
+  console.log(req.user._id);
+  Card.findById({ _id: req.params.cardId })
+    .then((card) => {
+      if (req.user._id === card.owner._id.toString()) {
+        Card.findByIdAndRemove({ _id: req.params.cardId })
+          .orFail()
+          .then((cardData) => res.send({ data: cardData }))
+          .catch((err) => {
+            if (err.name === 'DocumentNotFoundError') {
+              res.status(404).send({ message: 'No card with that ID found' });
+            } else if (err.name === 'CastError') {
+              res.status(400).send({ message: 'Invalid data request' });
+            }
+          });
+      } return ({ message: 'You\'re not authorized to do that' });
+    })
 };
 
 const likeCard = (req, res) => {

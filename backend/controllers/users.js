@@ -2,6 +2,20 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'No User with that ID found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Invalid data request' });
+      }
+    });
+};
+
 const getUsers = (req, res) => {
   User.find({})
     .orFail()
@@ -15,14 +29,12 @@ const getUserById = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'No User with that ID found' });
+        res.status(404).send({ message: 'User not found' });
       } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Invalid data request' });
       }
     });
 };
-
-// Hash password
 
 const createUser = (req, res) => {
   const {
@@ -80,10 +92,8 @@ const updateAvatar = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  // find user by email
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // console.log(user);
       const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
       res.send({ token });
     })
@@ -95,6 +105,7 @@ const login = (req, res) => {
 module.exports = {
   getUsers,
   getUserById,
+  getCurrentUser,
   createUser,
   updateProfile,
   updateAvatar,

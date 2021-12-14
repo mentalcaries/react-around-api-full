@@ -21,18 +21,10 @@ app.listen(PORT, () => {
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '618bb4f9997ea749959e68c8',
+    _id: '5d8b8592978f8bd833ca8133',
   };
 
   next();
-});
-
-app.use('/cards', cardRouter);
-
-app.use('/users', userRouter);
-
-app.post('/signin', (res, req) => {
-  login(res, req);
 });
 
 app.post('/signup', celebrate({
@@ -44,6 +36,16 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
   }),
 }), createUser);
+
+// app.use(auth);
+
+app.use('/cards', cardRouter);
+
+app.use('/users', userRouter);
+
+app.post('/signin', (res, req) => {
+  login(res, req);
+});
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
