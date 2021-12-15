@@ -1,0 +1,10 @@
+.user-form__button {
+  margin: 186px 0px 15px;
+  width: 100%;
+  min-height: 50px;
+  font-size: 18px;
+  line-height: 22px;
+  border-radius: 2px;
+  border:none;
+  cursor: pointer;
+}

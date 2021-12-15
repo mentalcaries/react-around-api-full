@@ -1,0 +1,12 @@
+.header__username{
+    margin: 0;
+    padding-right: 24px;
+}
+
+@media screen and (max-width:680px) {
+    .header__username{
+      padding: 0;
+      margin-bottom: 18px;
+    }
+    
+  }

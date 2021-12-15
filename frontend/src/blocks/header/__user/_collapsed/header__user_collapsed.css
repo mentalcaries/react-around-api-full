@@ -1,0 +1,9 @@
+.header__user_collapsed{
+    display: flex;
+}
+
+@media screen and (max-width: 680px) {
+    .header__user_collapsed {
+        display: none;
+    }
+  }

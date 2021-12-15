@@ -1,0 +1,5 @@
+.popup__field_type_error {
+  font-size: 14px;
+  line-height: 17px;
+  border-bottom: red 1px solid;
+}

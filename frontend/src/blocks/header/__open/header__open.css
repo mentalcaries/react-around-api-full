@@ -1,0 +1,19 @@
+.header__open {
+  background-color: transparent;
+  border: none;
+  background-image: url("../../../images/menu.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: contain;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  cursor: pointer;
+  display: none;
+}
+
+@media screen and (max-width: 680px) {
+  .header__open {
+    display: block;
+  }
+}
