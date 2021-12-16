@@ -1,5 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
+const { validator } = require('validator');
 
 function validateUrl(string) {
   return validator.isURL(string);
@@ -16,16 +17,25 @@ const {
 
 router.get('/me', getCurrentUser);
 
-router.get('/:id', getUserById);
+router.get('/:id', celebrate({
+  body: Joi.object().keys({
+    _id: Joi.string().hex().length(24),
+  }),
+}), getUserById);
 
 router.get('/', getUsers);
 
-router.patch('/me', updateProfile);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}), updateProfile);
 
-router.patch('/me/avatar', updateAvatar(celebrate({
+router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().custom(validateUrl),
   }),
-})));
+}), updateAvatar);
 
 module.exports = router;
