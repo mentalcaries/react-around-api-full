@@ -1,7 +1,8 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middleware/logger')
 
 const app = express();
 app.use(helmet());
@@ -13,6 +14,7 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
+const { error } = require('winston');
 
 app.use((req, res, next) => {
   req.user = {
@@ -21,6 +23,8 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(requestLogger)
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -45,6 +49,10 @@ app.post('/signin', (res, req) => {
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
+
+app.use(errorLogger);
+
+app.use(errors())
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

@@ -23,6 +23,7 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "all": "^0.0.0",
     "bcrypt": "^5.0.1",
     "celebrate": "^15.0.0",
     "eslint-config-airbnb-base": "^14.2.1",
