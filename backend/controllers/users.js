@@ -1,47 +1,51 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { BadRequest } = require('../middleware/errors/bad-request');
+const { NotFoundError } = require('../middleware/errors/not-found');
+const { Unauthorised } = require('../middleware/errors/unauthorised');
 const User = require('../models/user');
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      res.status(200).send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'No User with that ID found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid data request' });
+      if (!user) {
+        throw new NotFoundError('No User with that ID found');
       }
-    });
+      return res.status(200).send(user);
+    })
+    .catch(next);
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .orFail()
-    .then((users) => res.send(users))
-    .catch((err) => res.status(400).send(err));
+    .then((users) => {
+      if (!users) {
+        throw new BadRequest('Unacceptable request');
+      }
+      res.send(users);
+    })
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'User not found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid data request' });
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User not found');
       }
-    });
+      res.send({ data: user });
+    })
+    .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    return res.status(400).send({ message: 'Missing email or password' });
+    throw new BadRequest('Missing email or password');
   }
 
   return bcrypt.hash(password, 10, (err, hash) => {
@@ -53,40 +57,38 @@ const createUser = (req, res) => {
       password: hash,
     })
       .then((user) => res.send({ data: user }))
-      .catch((error) => {
-        if (error.name === 'ValidationError') {
-          res.status(400).send({ message: 'Invalid user data' });
-        }
-      });
+      .catch(next);
   });
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid user data' });
+    .then((user) => {
+      if (!user) {
+        throw new BadRequest('Invalid user data');
       }
-    });
+      res.send({ data: user });
+    })
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findOneAndUpdate(req.user._id, avatar, {
     new: true,
     runValidators: true,
   })
     .orFail()
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Invalid user data' });
+    .then((user) => {
+      if (!user) {
+        throw new BadRequest('Invalid user data');
       }
-    });
+      res.send({ data: user });
+    })
+    .catch(next);
 };
 
 const login = (req, res) => {
@@ -94,8 +96,12 @@ const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
-      res.send({ token });
+      if (!user) {
+        throw new Unauthorised('Probably a wrong email or password');
+      } else {
+        const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+        res.send({ token });
+      }
     })
     .catch((err) => {
       res.status(401).send({ message: err.message });
