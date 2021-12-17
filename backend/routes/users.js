@@ -2,9 +2,12 @@ const express = require('express');
 const { celebrate, Joi } = require('celebrate');
 const { validator } = require('validator');
 
-function validateUrl(string) {
-  return validator.isURL(string);
-}
+const validateURL = (string, helpers) => {
+  if (validator.isURL(string)) {
+    return string;
+  }
+  return helpers.error('string.uri');
+};
 
 const router = express.Router();
 const {
@@ -34,7 +37,8 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().custom(validateUrl),
+    // TO RECHECK CUSTOM VALIDATION
+    avatar: Joi.string(),
   }),
 }), updateAvatar);
 

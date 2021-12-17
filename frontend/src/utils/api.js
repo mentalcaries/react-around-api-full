@@ -104,8 +104,7 @@ class Api {
 }
 
 export const api = new Api({
-  // baseUrl: "https://around.nomoreparties.co/v1/group-10",
-  baseUrl: 'https://localhost:5000',
+  baseUrl: 'https://api.mentalcaries.students.nomoreparties.site',
 });
 
 export default Api;

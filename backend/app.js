@@ -2,10 +2,18 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
-const { requestLogger, errorLogger } = require('./middleware/logger')
+// eslint-disable-next-line no-var
+var cors = require('cors');
+
+const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
 app.use(helmet());
+app.use(cors());
+app.options('*', cors());
+
+require('dotenv').config();
+
 mongoose.connect('mongodb://localhost:27017/aroundb');
 app.use(express.json());
 
@@ -14,17 +22,16 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
-const { error } = require('winston');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '5d8b8592978f8bd833ca8133',
+    _id: '61b50568c8570296c089b00b',
   };
 
   next();
 });
 
-app.use(requestLogger)
+app.use(requestLogger);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -52,7 +59,7 @@ app.use((req, res) => {
 
 app.use(errorLogger);
 
-app.use(errors())
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
