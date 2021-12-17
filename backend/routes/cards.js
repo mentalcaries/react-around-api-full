@@ -12,34 +12,54 @@ function validateUrl(string) {
 const router = express.Router();
 
 const {
-  getCards, createCard, deleteCard, likeCard, dislikeCard,
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
 } = require('../controllers/cards');
 
 router.get('/', getCards);
 
-router.post('/', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+router.post(
+  '/',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string().required(),
+    }),
   }),
-}), createCard);
+  createCard,
+);
 
-router.delete('/:cardId', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().hex().length(24),
+router.delete(
+  '/:cardId',
+  celebrate({
+    body: Joi.object().keys({
+      _id: Joi.string().hex().length(24),
+    }),
   }),
-}), deleteCard);
+  deleteCard,
+);
 
-router.put('/:cardId/likes', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().hex().length(24),
+router.put(
+  '/:cardId/likes',
+  celebrate({
+    body: Joi.object().keys({
+      _id: Joi.string().hex().length(24),
+    }),
   }),
-}), likeCard);
+  likeCard,
+);
 
-router.delete('/:cardId/likes', celebrate({
-  body: Joi.object().keys({
-    _id: Joi.string().hex().length(24),
+router.delete(
+  '/:cardId/likes',
+  celebrate({
+    body: Joi.object().keys({
+      _id: Joi.string().hex().length(24),
+    }),
   }),
-}), dislikeCard);
+  dislikeCard,
+);
 
 module.exports = router;

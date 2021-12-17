@@ -77,6 +77,7 @@ const updateProfile = (req, res, next) => {
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
+  console.log(avatar);
   User.findOneAndUpdate(req.user._id, avatar, {
     new: true,
     runValidators: true,
