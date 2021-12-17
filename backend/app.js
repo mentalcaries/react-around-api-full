@@ -2,11 +2,16 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+// eslint-disable-next-line no-var
 var cors = require('cors');
+
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
 app.use(helmet());
+
+require('dotenv').config();
+
 app.use(cors());
 app.options('*', cors());
 mongoose.connect('mongodb://localhost:27017/aroundb');
