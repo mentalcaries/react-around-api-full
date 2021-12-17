@@ -104,7 +104,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: 'https://api.mentalcaries.students.nomoreparties.site',
+  baseUrl: process.env.NODE_ENV === 'production'? 'https://api.mentalcaries.students.nomoreparties.site': 'http://localhost:3000',
 });
 
 export default Api;

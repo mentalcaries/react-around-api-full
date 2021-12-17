@@ -23,13 +23,13 @@ const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '61b50568c8570296c089b00b',
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '61b50568c8570296c089b00b',
+//   };
 
-  next();
-});
+//   next();
+// });
 
 app.use(requestLogger);
 
