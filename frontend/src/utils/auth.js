@@ -1,4 +1,4 @@
-const BASE_URL = "https://register.nomoreparties.co";
+const BASE_URL = "https://api.mentalcaries.students.nomoreparties.site";
 // const BASE_URL = "https://register.nomoreparties.co";
 
 function checkRes(res) {
