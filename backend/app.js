@@ -2,7 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
-var cors = require('cors')
+var cors = require('cors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
