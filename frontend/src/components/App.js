@@ -39,8 +39,8 @@ function App() {
 
 
   React.useEffect(() => {
-    api
-      .getProfileInfo(token)
+       api
+      .getProfileInfo()
       .then((res) => {
         setCurrentUser(res);
       })
@@ -84,7 +84,7 @@ function App() {
 
   function handleUpdateUser(userInfo) {
     api
-      .setProfileInfo(userInfo, token)
+      .setProfileInfo(userInfo)
       .then((res) => {
         setCurrentUser(res); 
         closeAllPopups();
@@ -94,7 +94,7 @@ function App() {
   }
 
   function handleUpdateAvatar(link) {
-    api.updateProfilePicture(link, token).then((res) => {
+    api.updateProfilePicture(link).then((res) => {
       setCurrentUser(res);
       closeAllPopups();
     })
@@ -103,7 +103,7 @@ function App() {
 
   function handleAddPlaceSubmit(newCard) {
     api
-      .addNewCard(newCard, token)
+      .addNewCard(newCard)
       .then((addedCard)=>{
         setCards([addedCard, ...cards]);
         closeAllPopups();
@@ -114,14 +114,14 @@ function App() {
 
   React.useEffect(() => {
     api
-      .getCards(token)
+      .getCards()
       .then((cards) => setCards(cards))
       .catch((err)=>console.log(err))
   }, []);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeCardStatus(card._id, isLiked, token).then((newCard) => {
+    api.changeCardStatus(card._id, isLiked).then((newCard) => {
       setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
     })
     .catch((err)=>console.log(err))
@@ -129,7 +129,7 @@ function App() {
 
   function handleDeleteCard(card) {
     api
-      .deleteCard(card._id, token)
+      .deleteCard(card._id)
       .then(()=>{
         setCards((cards) => cards.filter((c) => c._id !== card._id))
       })
@@ -197,6 +197,8 @@ function App() {
           setIsSuccess(false);
           return;
         } else {
+          localStorage.setItem("jwt", data.token)
+          setToken(data.token)
           setIsloggedIn(true);
           setPassword("");
           setUserEmail(email)

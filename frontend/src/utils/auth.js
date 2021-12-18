@@ -1,5 +1,7 @@
-const BASE_URL = "https://api.mentalcaries.students.nomoreparties.site";
-// const BASE_URL = "https://register.nomoreparties.co";
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://api.mentalcaries.students.nomoreparties.site'
+    : 'http://localhost:3000';
 
 function checkRes(res) {
   if (res.ok) {
@@ -9,11 +11,11 @@ function checkRes(res) {
 }
 
 export function register(password, email) {
-  console.log("THis is it!")
+  console.log('THis is it!');
   return fetch(`${BASE_URL}/signup`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-type": "application/json",
+      'Content-type': 'application/json',
     },
     body: JSON.stringify({
       password: password,
@@ -24,9 +26,9 @@ export function register(password, email) {
 
 export function authorise(password, email) {
   return fetch(`${BASE_URL}/signin`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       password,
@@ -36,7 +38,7 @@ export function authorise(password, email) {
     .then(checkRes)
     .then((data) => {
       if (data.token) {
-        localStorage.setItem("jwt", data.token);
+        localStorage.setItem('jwt', data.token);
         return data;
       }
       return;
@@ -45,9 +47,9 @@ export function authorise(password, email) {
 
 export function verifyUser(token) {
   return fetch(`${BASE_URL}/users/me`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
   })

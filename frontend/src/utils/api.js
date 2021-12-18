@@ -1,16 +1,18 @@
+const token = localStorage.getItem('jwt')
+
 class Api {
   constructor({baseUrl, headers}) {
     this._baseUrl = baseUrl;
     this._headers = headers;
   }
-
+  
   _checkRes(res) {
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(`Error: ${res.status}`);
   }
-
+  
   getCards(token) {
     return fetch(`${this._baseUrl}/cards`, {
       headers: {
@@ -19,8 +21,8 @@ class Api {
       },
     }).then(this._checkRes);
   }
-
-  getProfileInfo(token) {
+  
+  getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
@@ -30,7 +32,7 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  setProfileInfo(item, token) {
+  setProfileInfo(item) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
@@ -44,7 +46,7 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  addNewCard(card, token) {
+  addNewCard(card) {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: {
@@ -55,7 +57,7 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  deleteCard(id, token) {
+  deleteCard(id) {
     return fetch(`${this._baseUrl}/cards/${id}`, {
       method: 'DELETE',
       headers: {
@@ -65,7 +67,7 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  addCardLike(id, token) {
+  addCardLike(id) {
     return fetch(`${this._baseUrl}/cards/likes/${id}`, {
       method: 'PUT',
       headers: {
@@ -75,7 +77,7 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  removeCardLike(id, token) {
+  removeCardLike(id) {
     return fetch(`${this._baseUrl}/cards/likes/${id}`, {
       method: 'DELETE',
       headers: {
@@ -85,13 +87,13 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  changeCardStatus(id, liked, token) {
+  changeCardStatus(id, liked) {
     if (liked) {
       return this.removeCardLike(id, token);
     } else return this.addCardLike(id, token);
   }
 
-  updateProfilePicture(avatar, token) {
+  updateProfilePicture(avatar) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: {

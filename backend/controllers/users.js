@@ -5,13 +5,15 @@ const { NotFoundError } = require('../middleware/errors/not-found');
 const { Unauthorised } = require('../middleware/errors/unauthorised');
 const User = require('../models/user');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('No User with that ID found');
       }
-      return res.status(200).send(user);
+      return res.status(200).send({ data: user });
     })
     .catch(next);
 };
@@ -77,7 +79,6 @@ const updateProfile = (req, res, next) => {
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  console.log(avatar);
   User.findOneAndUpdate(req.user._id, avatar, {
     new: true,
     runValidators: true,
@@ -100,7 +101,7 @@ const login = (req, res) => {
       if (!user) {
         throw new Unauthorised('Probably a wrong email or password');
       } else {
-        const token = jwt.sign({ _id: user._id }, 'key', { expiresIn: '7d' });
+        const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret-key', { expiresIn: '7d' });
         res.send({ token });
       }
     })

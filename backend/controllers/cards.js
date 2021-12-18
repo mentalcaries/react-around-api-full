@@ -41,7 +41,7 @@ const deleteCard = (req, res) => {
             }
           });
       } return ({ message: 'You\'re not authorized to do that' });
-    })
+    });
 };
 
 const likeCard = (req, res) => {
