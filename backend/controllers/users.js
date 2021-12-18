@@ -13,7 +13,7 @@ const getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('No User with that ID found');
       }
-      return res.status(200).send({ data: user });
+      return res.status(200).send(user);
     })
     .catch(next);
 };
@@ -95,7 +95,6 @@ const updateAvatar = (req, res, next) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {

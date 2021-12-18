@@ -11,7 +11,6 @@ function checkRes(res) {
 }
 
 export function register(password, email) {
-  console.log('THis is it!');
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {

@@ -25,7 +25,7 @@ const auth = require('./middleware/auth');
 
 // app.use((req, res, next) => {
 //   req.user = {
-//     _id: '61b50568c8570296c089b00b',
+//     _id: '61bd132316c3f65ce3779cae',
 //   };
 
 //   next();
@@ -43,15 +43,13 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-// app.use(auth);
+app.post('/signin', login);
+
+app.use(auth);
 
 app.use('/cards', cardRouter);
 
 app.use('/users', userRouter);
-
-app.post('/signin', (res, req) => {
-  login(res, req);
-});
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
@@ -63,6 +61,7 @@ app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
+  console.error(err);
   res
     .status(statusCode)
     .send({

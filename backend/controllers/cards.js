@@ -26,7 +26,6 @@ const deleteCard = (req, res) => {
   // TO DO user id must  equal card owner id
   // else 'user not authorized'
   // need id of current user and card owner id.
-  console.log(req.user._id);
   Card.findById({ _id: req.params.cardId })
     .then((card) => {
       if (req.user._id === card.owner._id.toString()) {

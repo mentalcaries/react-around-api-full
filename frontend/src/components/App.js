@@ -37,7 +37,6 @@ function App() {
   const [token, setToken] = React.useState(localStorage.getItem("jwt"))
   const history = useHistory();
 
-
   React.useEffect(() => {
        api
       .getProfileInfo()
@@ -45,7 +44,7 @@ function App() {
         setCurrentUser(res);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);

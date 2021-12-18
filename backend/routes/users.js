@@ -1,6 +1,7 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-const { validator } = require('validator');
+// eslint-disable-next-line no-var
+var validator = require('validator');
 
 const validateURL = (string, helpers) => {
   if (validator.isURL(string)) {
@@ -38,7 +39,7 @@ router.patch('/me', celebrate({
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     // TO RECHECK CUSTOM VALIDATION
-    avatar: Joi.string(),
+    avatar: Joi.string().custom(validateURL),
   }),
 }), updateAvatar);
 
