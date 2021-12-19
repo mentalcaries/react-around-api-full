@@ -1,4 +1,7 @@
-# react-around-api-full
+# Around the US : The Complete Project
+
+## Frontend built with React
+## Backend built with Mongo/Express
 
 The API of "Around the U.S." with authorization and registration handled by the back-end server.
 
