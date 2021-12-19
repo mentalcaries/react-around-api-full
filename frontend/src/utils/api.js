@@ -3,29 +3,29 @@ class Api {
     this._baseUrl = baseUrl;
     this._headers = headers;
   }
-  
+
   _checkRes(res) {
     if (res.ok) {
       return res.json();
     }
     return Promise.reject(`Error: ${res.status}`);
   }
-  
+
   getCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then(this._checkRes);
   }
-  
+
   getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
@@ -35,7 +35,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -49,7 +49,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(card),
@@ -60,7 +60,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
@@ -70,7 +70,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
@@ -80,7 +80,7 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
@@ -96,7 +96,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(avatar),
@@ -105,7 +105,10 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: process.env.NODE_ENV === 'production'? 'https://api.mentalcaries.students.nomoreparties.site': 'http://localhost:3000',
+  baseUrl:
+    process.env.NODE_ENV === 'production'
+      ? 'https://api.mentalcaries.students.nomoreparties.site'
+      : 'http://localhost:3000',
 });
 
 export default Api;

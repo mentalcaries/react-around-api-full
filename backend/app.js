@@ -23,14 +23,6 @@ const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '61bd132316c3f65ce3779cae',
-//   };
-
-//   next();
-// });
-
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
@@ -67,7 +59,6 @@ app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  console.error(err);
   res
     .status(statusCode)
     .send({
