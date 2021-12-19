@@ -34,7 +34,7 @@ function App() {
   const [password, setPassword] = React.useState('');
   const [userEmail, setUserEmail] = React.useState('');
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [token, setToken] = React.useState(localStorage.getItem('jwt'));
+  // const [token, setToken] = React.useState(localStorage.getItem('jwt'));
   const history = useHistory();
 
   React.useEffect(() => {
@@ -199,7 +199,7 @@ function App() {
           return;
         } else {
           localStorage.setItem('jwt', data.token);
-          setToken(data.token);
+          // setToken(data.token);
           setIsloggedIn(true);
           setPassword('');
           setUserEmail(email);
@@ -215,6 +215,7 @@ function App() {
   }
 
   const checkToken = React.useCallback(() => {
+    const token = localStorage.getItem('jwt')
     if (token) {
       verifyUser(token)
         .then((res) => {
@@ -230,7 +231,7 @@ function App() {
           console.log('Error', err);
         });
     }
-  }, [history, token]);
+  }, [history]);
 
   React.useEffect(() => {
     checkToken();
@@ -238,6 +239,7 @@ function App() {
 
   function signOut() {
     localStorage.removeItem('jwt');
+    setCurrentUser({});
     setIsloggedIn(false);
     setUserEmail('');
     history.push('/');
