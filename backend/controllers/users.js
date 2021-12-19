@@ -72,14 +72,14 @@ const updateProfile = (req, res, next) => {
       if (!user) {
         throw new BadRequest('Invalid user data');
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 };
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  User.findOneAndUpdate(req.user._id, avatar, {
+  User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true,
     runValidators: true,
   })
@@ -88,7 +88,7 @@ const updateAvatar = (req, res, next) => {
       if (!user) {
         throw new BadRequest('Invalid user data');
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 };

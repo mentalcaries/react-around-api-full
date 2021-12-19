@@ -95,6 +95,7 @@ function App() {
     api
       .updateProfilePicture(link)
       .then((res) => {
+        console.log(res)
         setCurrentUser(res);
         closeAllPopups();
       })
@@ -119,7 +120,6 @@ function App() {
   }, []);
 
   function handleCardLike(card) {
-    console.log(card)
     const isLiked = card.likes.some((likerId) => likerId === currentUser._id);
     api
       .changeCardStatus(card._id, isLiked)

@@ -50,7 +50,7 @@ const likeCard = (req, res) => {
     { new: true },
   )
     .orFail()
-    .then((cardData) => res.send({ data: cardData }))
+    .then((cardData) => res.send(cardData))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'No card with that ID found' });
@@ -67,7 +67,7 @@ const dislikeCard = (req, res) => {
     { new: true },
   )
     .orFail()
-    .then((cardData) => res.send({ data: cardData }))
+    .then((cardData) => res.send(cardData))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         res.status(404).send({ message: 'No card with that ID found' });
