@@ -27,7 +27,7 @@ function App() {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cards, setCards] = React.useState([]);
-  const [isLoggedIn, setIsloggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [email, setEmail] = React.useState('');
@@ -38,7 +38,7 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    api
+    isLoggedIn && api
       .getProfileInfo()
       .then((res) => {
         setCurrentUser(res);
@@ -113,11 +113,11 @@ function App() {
   }
 
   React.useEffect(() => {
-    api
+    isLoggedIn && api
       .getCards()
       .then((cards) => setCards(cards.reverse()))
       .catch((err) => console.log(err));
-  }, []);
+  }, [isLoggedIn]);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((likerId) => likerId === currentUser._id);
@@ -200,7 +200,7 @@ function App() {
         } else {
           localStorage.setItem('jwt', data.token);
           // setToken(data.token);
-          setIsloggedIn(true);
+          setIsLoggedIn(true);
           setPassword('');
           setUserEmail(email);
           setEmail('');
@@ -223,7 +223,7 @@ function App() {
             return;
           } else {
             setUserEmail(res.email);
-            setIsloggedIn(true);
+            setIsLoggedIn(true);
             history.push('/');
           }
         })
@@ -240,7 +240,7 @@ function App() {
   function signOut() {
     localStorage.removeItem('jwt');
     setCurrentUser({});
-    setIsloggedIn(false);
+    setIsLoggedIn(false);
     setUserEmail('');
     history.push('/');
   }
