@@ -1,7 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-// eslint-disable-next-line no-var
-var validator = require('validator');
+const validator = require('validator');
 
 const validateURL = (string, helpers) => {
   if (validator.isURL(string)) {

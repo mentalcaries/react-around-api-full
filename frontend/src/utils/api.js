@@ -13,8 +13,9 @@ class Api {
     return Promise.reject(`Error: ${res.status}`);
   }
   
-  getCards(token) {
+  getCards() {
     return fetch(`${this._baseUrl}/cards`, {
+      method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ class Api {
   }
 
   addCardLike(id) {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -78,7 +79,7 @@ class Api {
   }
 
   removeCardLike(id) {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,

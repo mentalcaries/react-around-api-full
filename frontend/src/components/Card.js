@@ -16,15 +16,15 @@ function Card(props) {
     props.onCardDelete(props.card);
   }
 
-  //Delete button visible
-  const isOwn = props.card.owner._id === currentUser._id;
+  // Delete button visible
+  const isOwn = props.card.owner === currentUser._id;
   const cardDeleteButtonClassName = `card__delete-button ${
     isOwn ? 'card__delete-button_visible' : ' '
   }`;
 
   // Check if the card was liked by the current user
-  
-  const isLiked = props.card.likes && props.card.likes.some((i) => i._id === currentUser._id);
+
+  const isLiked = props.card.likes && props.card.likes.some((liker) => liker === currentUser._id);
   
   const cardLikeButtonClassName = `card__like-button ${
     isLiked ? 'card__like-button_active' : ''

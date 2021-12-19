@@ -1,6 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-const { validator } = require('validator');
+const validator = require('validator');
 
 function validateUrl(string) {
   if (!validator.isURL(string)) {
