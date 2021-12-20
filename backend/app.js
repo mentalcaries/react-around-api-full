@@ -3,7 +3,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const cors = require('cors');
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
@@ -11,6 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.options('*', cors());
+const { PORT = 3000 } = process.env;
 
 app.set('trust proxy', 1);
 const limiter = rateLimit({
@@ -26,7 +27,6 @@ require('dotenv').config();
 mongoose.connect('mongodb://localhost:27017/aroundb');
 app.use(express.json());
 
-const { PORT = 3000 } = process.env;
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
