@@ -6,16 +6,16 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
 
 const app = express();
 app.use(helmet());
 app.use(cors());
 app.options('*', cors());
-app.use(limiter);
+// app.use(limiter)
 require('dotenv').config();
 
 const { PORT = 3000, MONGODB } = process.env;
