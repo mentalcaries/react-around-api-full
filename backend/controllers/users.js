@@ -46,10 +46,16 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        res.status(409).send({ message: 'Try another email' });
+      }
+    });
   if (!email || !password) {
     throw new BadRequest('Missing email or password');
   }
-
+  // if email already exists, throw 409
   return bcrypt.hash(password, 10, (err, hash) => {
     User.create({
       name,
@@ -58,7 +64,17 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     })
-      .then((user) => res.send({ data: user }))
+      .then((user) => {
+        res.send({
+          data: {
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+            _id: user._id,
+          },
+        });
+      })
       .catch(next);
   });
 };
@@ -93,7 +109,7 @@ const updateAvatar = (req, res, next) => {
     .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -104,8 +120,8 @@ const login = (req, res) => {
         res.send({ token });
       }
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
+    .catch(() => {
+      next(new Unauthorised('That email or password shall not pass'));
     });
 };
 

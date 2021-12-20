@@ -1,49 +1,39 @@
+const { BadRequest } = require('../middleware/errors/bad-request');
 const Card = require('../models/card');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .orFail() // throws a DocumentNotFoundError
     .then((cardData) => {
       res.send(cardData); // skipped, because an error was thrown
     })
-    .catch((err) => {
-      res.status(404).send(err);
-    });
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Please submit a name and valid URL' });
-      }
-    });
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
-  // TO DO user id must  equal card owner id
-  // else 'user not authorized'
-  // need id of current user and card owner id.
+const deleteCard = (req, res, next) => {
   Card.findById({ _id: req.params.cardId })
+    .orFail()
     .then((card) => {
       if (req.user._id === card.owner._id.toString()) {
         Card.findByIdAndRemove({ _id: req.params.cardId })
           .orFail()
           .then((cardData) => res.send({ data: cardData }))
-          .catch((err) => {
-            if (err.name === 'DocumentNotFoundError') {
-              res.status(404).send({ message: 'No card with that ID found' });
-            } else if (err.name === 'CastError') {
-              res.status(400).send({ message: 'Invalid data request' });
-            }
-          });
-      } return ({ message: 'You\'re not authorized to do that' });
+          .catch(next);
+      }
+    })
+    .catch(() => {
+      next(new BadRequest('You cant delete that'));
     });
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -51,16 +41,10 @@ const likeCard = (req, res) => {
   )
     .orFail()
     .then((cardData) => res.send(cardData))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'No card with that ID found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid data request' });
-      }
-    });
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // remove _id from the array
@@ -68,13 +52,7 @@ const dislikeCard = (req, res) => {
   )
     .orFail()
     .then((cardData) => res.send(cardData))
-    .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'No card with that ID found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Invalid data request' });
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {
