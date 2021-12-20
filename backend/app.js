@@ -3,7 +3,7 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
@@ -13,13 +13,13 @@ app.use(cors());
 app.options('*', cors());
 
 app.set('trust proxy', 1);
-const apiLimiter = rateLimit({
+const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 100, // limit each IP to 100 requests per windowMs
 });
 
 //  apply to all requests
-app.use('/api/', apiLimiter);
+app.use(limiter);
 
 require('dotenv').config();
 
