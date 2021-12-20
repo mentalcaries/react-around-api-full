@@ -12,9 +12,9 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 // });
 
 const app = express();
-app.use(helmet());
 app.use(cors());
 app.options('*', cors());
+app.use(helmet());
 // app.use(limiter)
 require('dotenv').config();
 
