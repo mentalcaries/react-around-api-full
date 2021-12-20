@@ -1,4 +1,5 @@
 const { BadRequest } = require('../middleware/errors/bad-request');
+const { NotFoundError } = require('../middleware/errors/not-found');
 const Card = require('../models/card');
 
 const getCards = (req, res, next) => {
@@ -19,7 +20,7 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   Card.findById({ _id: req.params.cardId })
-    .orFail()
+    .orFail(() => new NotFoundError('That card doesn\'t exist'))
     .then((card) => {
       if (req.user._id === card.owner._id.toString()) {
         Card.findByIdAndRemove({ _id: req.params.cardId })
