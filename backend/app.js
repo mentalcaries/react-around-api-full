@@ -8,12 +8,10 @@ const rateLimit = require('express-rate-limit');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
-app.use(helmet());
 app.use(cors());
 app.options('*', cors());
 const { PORT = 3000 } = process.env;
 
-app.set('trust proxy', 1);
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -25,6 +23,7 @@ app.use(limiter);
 require('dotenv').config();
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
+app.use(helmet());
 app.use(express.json());
 
 const userRouter = require('./routes/users');
