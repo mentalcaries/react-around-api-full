@@ -11,30 +11,31 @@ class Api {
     return Promise.reject(`Error: ${res.status}`);
   }
 
-  getCards(token) {
+  getCards() {
     return fetch(`${this._baseUrl}/cards`, {
+      method: 'GET',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then(this._checkRes);
   }
 
-  getProfileInfo(token) {
+  getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
   }
 
-  setProfileInfo(item, token) {
+  setProfileInfo(item) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -44,58 +45,58 @@ class Api {
     }).then((res) => this._checkRes(res));
   }
 
-  addNewCard(card, token) {
+  addNewCard(card) {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(card),
     }).then((res) => this._checkRes(res));
   }
 
-  deleteCard(id, token) {
+  deleteCard(id) {
     return fetch(`${this._baseUrl}/cards/${id}`, {
       method: 'DELETE',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
   }
 
-  addCardLike(id, token) {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+  addCardLike(id) {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'PUT',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
   }
 
-  removeCardLike(id, token) {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+  removeCardLike(id) {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: 'DELETE',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
     }).then((res) => this._checkRes(res));
   }
 
-  changeCardStatus(id, liked, token) {
+  changeCardStatus(id, liked) {
     if (liked) {
-      return this.removeCardLike(id, token);
-    } else return this.addCardLike(id, token);
+      return this.removeCardLike(id, localStorage.getItem('jwt'));
+    } else return this.addCardLike(id, localStorage.getItem('jwt'));
   }
 
-  updateProfilePicture(avatar, token) {
+  updateProfilePicture(avatar) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: {
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(avatar),
@@ -104,7 +105,10 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: 'https://api.mentalcaries.students.nomoreparties.site',
+  baseUrl:
+    process.env.NODE_ENV === 'production'
+      ? 'https://api.mentalcaries.students.nomoreparties.site'
+      : 'http://localhost:3000',
 });
 
 export default Api;

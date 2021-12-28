@@ -1,13 +1,13 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
+// import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 function AddPlacePopup({isOpen, onClose, onAddPlaceSubmit, onOutsideClick}) {
   const [title, setTitle] = React.useState('');
   const [link, setLink] = React.useState('');
   const [isTitleValid, setIsTitleValid] = React.useState(false);
   const [isLinkValid, setIsLinkValid] = React.useState(false);
-  const currentUser = React.useContext(CurrentUserContext);
+  // const currentUser = React.useContext(CurrentUserContext);
 
   const titleRef = React.useRef();
   const linkRef = React.useRef();

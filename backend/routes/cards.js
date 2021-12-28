@@ -1,6 +1,6 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-const { validator } = require('validator');
+const validator = require('validator');
 
 function validateUrl(string) {
   if (!validator.isURL(string)) {
@@ -26,7 +26,7 @@ router.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().required().min(2).max(30),
-      link: Joi.string().required(),
+      link: Joi.string().required().custom(validateUrl),
     }),
   }),
   createCard,

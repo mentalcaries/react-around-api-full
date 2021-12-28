@@ -1,21 +1,21 @@
-import React from "react";
-import { Switch, Route, Link, useHistory } from "react-router-dom";
-import Header from "./Header";
-import Main from "./Main";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
-import Footer from "./Footer";
-import { api } from "../utils/api";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import EditProfilePopup from "./EditProfilePopup";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import Login from "./Login";
-import Register from "./Register";
-import ProtectedRoute from "./ProtectedRoute";
-import MessagePopup from "./MessagePopup";
-import InfoTooltip from "./InfoTooltip";
-import { register, authorise, verifyUser } from "../utils/auth";
+import React from 'react';
+import {Switch, Route, Link, useHistory} from 'react-router-dom';
+import Header from './Header';
+import Main from './Main';
+import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
+import Footer from './Footer';
+import {api} from '../utils/api';
+import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import Login from './Login';
+import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
+import MessagePopup from './MessagePopup';
+import InfoTooltip from './InfoTooltip';
+import {register, authorise, verifyUser} from '../utils/auth';
 
 function App() {
   const [currentUser, setCurrentUser] = React.useState({});
@@ -27,25 +27,24 @@ function App() {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [cards, setCards] = React.useState([]);
-  const [isLoggedIn, setIsloggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [userEmail, setUserEmail] = React.useState("");
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [userEmail, setUserEmail] = React.useState('');
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [token, setToken] = React.useState(localStorage.getItem("jwt"))
+  // const [token, setToken] = React.useState(localStorage.getItem('jwt'));
   const history = useHistory();
 
-
   React.useEffect(() => {
-    api
-      .getProfileInfo(token)
+    isLoggedIn && api
+      .getProfileInfo()
       .then((res) => {
         setCurrentUser(res);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -77,63 +76,68 @@ function App() {
   }
 
   function handleOutsideClick(evt) {
-    if (evt.target.className === "popup__overlay") {
+    if (evt.target.className === 'popup__overlay') {
       closeAllPopups();
     }
   }
 
   function handleUpdateUser(userInfo) {
     api
-      .setProfileInfo(userInfo, token)
+      .setProfileInfo(userInfo)
       .then((res) => {
-        setCurrentUser(res); 
+        setCurrentUser(res);
         closeAllPopups();
-        
       })
-      .catch((err)=>console.log(err))
+      .catch((err) => console.log(err));
   }
 
   function handleUpdateAvatar(link) {
-    api.updateProfilePicture(link, token).then((res) => {
-      setCurrentUser(res);
-      closeAllPopups();
-    })
-    .catch((err)=>console.log(err))
+    api
+      .updateProfilePicture(link)
+      .then((res) => {
+        console.log(res)
+        setCurrentUser(res);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleAddPlaceSubmit(newCard) {
     api
-      .addNewCard(newCard, token)
-      .then((addedCard)=>{
-        setCards([addedCard, ...cards]);
+      .addNewCard(newCard)
+      .then((addedCard) => {
+        setCards([addedCard, ...cards.reverse()]);
         closeAllPopups();
-        
       })
-      .catch((err)=>console.log(err))
+      .catch((err) => console.log(err));
   }
 
   React.useEffect(() => {
-    api
-      .getCards(token)
-      .then((cards) => setCards(cards))
-      .catch((err)=>console.log(err))
-  }, []);
+    isLoggedIn && api
+      .getCards()
+      .then((cards) => setCards(cards.reverse()))
+      .catch((err) => console.log(err));
+  }, [isLoggedIn]);
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeCardStatus(card._id, isLiked, token).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    })
-    .catch((err)=>console.log(err))
+    const isLiked = card.likes.some((likerId) => likerId === currentUser._id);
+    api
+      .changeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleDeleteCard(card) {
     api
-      .deleteCard(card._id, token)
-      .then(()=>{
-        setCards((cards) => cards.filter((c) => c._id !== card._id))
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((cards) => cards.filter((c) => c._id !== card._id));
       })
-      .catch((err)=>console.log(err))
+      .catch((err) => console.log(err));
   }
 
   const anyPopupOpen =
@@ -144,19 +148,17 @@ function App() {
     isInfoTooltipOpen ||
     selectedCard;
 
-
   React.useEffect(() => {
     const closeByEscape = (e) => {
       if (e.key === 'Escape') {
         closeAllPopups();
       }
-    }
+    };
 
-  anyPopupOpen &&  document.addEventListener('keydown', closeByEscape)
-    
-    return () => document.removeEventListener('keydown', closeByEscape)
-}, [anyPopupOpen])
+    anyPopupOpen && document.addEventListener('keydown', closeByEscape);
 
+    return () => document.removeEventListener('keydown', closeByEscape);
+  }, [anyPopupOpen]);
 
   function handleRegisterSubmit() {
     register(password, email)
@@ -167,7 +169,7 @@ function App() {
           setTimeout(() => {
             setIsInfoTooltipOpen(false);
           }, 1500);
-          history.push("/login");
+          history.push('/login');
         } else {
           setIsSuccess(false);
           // setIsInfoTooltipOpen(true);
@@ -176,17 +178,16 @@ function App() {
       .catch(() => {
         setIsSuccess(false);
         // setIsInfoTooltipOpen(true);
-        
       })
-      .finally(()=>{
-        setIsInfoTooltipOpen(true)
+      .finally(() => {
+        setIsInfoTooltipOpen(true);
         setTimeout(() => {
           setIsInfoTooltipOpen(false);
         }, 1000);
-      })
+      });
   }
 
-  function handleLoginSubmit({ password, email }) {
+  function handleLoginSubmit({password, email}) {
     if (!password || !email) {
       return;
     }
@@ -197,11 +198,13 @@ function App() {
           setIsSuccess(false);
           return;
         } else {
-          setIsloggedIn(true);
-          setPassword("");
-          setUserEmail(email)
-          setEmail("");
-          history.push("/");
+          localStorage.setItem('jwt', data.token);
+          // setToken(data.token);
+          setIsLoggedIn(true);
+          setPassword('');
+          setUserEmail(email);
+          setEmail('');
+          history.push('/');
         }
       })
       .catch((err) => {
@@ -212,38 +215,39 @@ function App() {
   }
 
   const checkToken = React.useCallback(() => {
+    const token = localStorage.getItem('jwt')
     if (token) {
       verifyUser(token)
         .then((res) => {
           if (!res) {
             return;
           } else {
-            setUserEmail(res.data.email);
-            setIsloggedIn(true);
-            history.push("/");
+            setUserEmail(res.email);
+            setIsLoggedIn(true);
+            history.push('/');
           }
         })
         .catch((err) => {
-          console.log("Error", err);
+          console.log('Error', err);
         });
     }
-  }, [history, token]);
+  }, [history]);
 
   React.useEffect(() => {
     checkToken();
   }, [checkToken]);
 
   function signOut() {
-    localStorage.removeItem("jwt");
-    setIsloggedIn(false);
-    setUserEmail("")
-    history.push("/");
+    localStorage.removeItem('jwt');
+    setCurrentUser({});
+    setIsLoggedIn(false);
+    setUserEmail('');
+    history.push('/');
   }
 
   function toggleMenu() {
     setIsMenuOpen(!isMenuOpen);
   }
-
 
   return (
     <div className="App">
@@ -256,7 +260,7 @@ function App() {
                   button={
                     <button
                       className={`header__open hover-animate ${
-                        isMenuOpen ? "header__close" : ""
+                        isMenuOpen ? 'header__close' : ''
                       }`}
                       onClick={toggleMenu}
                     />
@@ -264,7 +268,7 @@ function App() {
                 >
                   <div
                     className={`header__user ${
-                      !isMenuOpen ? "header__user_collapsed" : ""
+                      !isMenuOpen ? 'header__user_collapsed' : ''
                     }`}
                   >
                     <p className="header__username">{userEmail}</p>
@@ -336,11 +340,11 @@ function App() {
 
               <Route path="/login">
                 <Header>
-                  {" "}
+                  {' '}
                   <Link className="header__link hover-animate" to="/register">
-                    {" "}
+                    {' '}
                     <p>Sign up</p>
-                  </Link>{" "}
+                  </Link>{' '}
                 </Header>
                 <Login
                   onSubmit={handleLoginSubmit}
@@ -353,11 +357,11 @@ function App() {
 
               <Route path="/register">
                 <Header>
-                  {" "}
+                  {' '}
                   <Link className="header__link hover-animate" to="/login">
-                    {" "}
+                    {' '}
                     <p>Log in</p>
-                  </Link>{" "}
+                  </Link>{' '}
                 </Header>
                 <Register
                   handleSubmit={handleRegisterSubmit}

@@ -2,8 +2,8 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
-// eslint-disable-next-line no-var
-var cors = require('cors');
+
+const cors = require('cors');
 
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
@@ -23,15 +23,13 @@ const cardRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '61bb42e320537aea1da0b31a',
-  };
-
-  next();
-});
-
 app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -43,15 +41,13 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-// app.use(auth);
+app.post('/signin', login);
+
+app.use(auth);
 
 app.use('/cards', cardRouter);
 
 app.use('/users', userRouter);
-
-app.post('/signin', (res, req) => {
-  login(res, req);
-});
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
