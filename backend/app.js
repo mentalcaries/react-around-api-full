@@ -25,7 +25,7 @@ const auth = require('./middleware/auth');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '61b50568c8570296c089b00b',
+    _id: '61bb42e320537aea1da0b31a',
   };
 
   next();

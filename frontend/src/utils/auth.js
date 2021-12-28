@@ -1,5 +1,5 @@
 const BASE_URL = "https://api.mentalcaries.students.nomoreparties.site";
-// const BASE_URL = "https://register.nomoreparties.co";
+// const BASE_URL = "https://localhost:3000";
 
 function checkRes(res) {
   if (res.ok) {
