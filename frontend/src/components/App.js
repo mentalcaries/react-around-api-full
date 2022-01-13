@@ -106,7 +106,7 @@ function App() {
     api
       .addNewCard(newCard)
       .then((addedCard) => {
-        setCards([addedCard, ...cards.reverse()]);
+        setCards([addedCard, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.log(err));
