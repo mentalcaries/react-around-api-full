@@ -107,7 +107,7 @@ class Api {
 export const api = new Api({
   baseUrl:
     process.env.NODE_ENV === 'production'
-      ? 'https://api.mentalcaries.students.nomoreparties.site'
+      ? 'https://api.devaround.students.nomoreparties.sbs'
       : 'http://localhost:3000',
 });
 
