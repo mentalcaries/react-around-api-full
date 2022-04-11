@@ -20,7 +20,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "npm run build && scp -r ./build/* neexis@mentalcaries.students.nomoreparties.site:/home/neexis/around-frontend"
+    "deploy": "npm run build && scp -r ./build/* neexis@devaround.students.nomoreparties.sbs:/home/neexis/around-frontend"
   },
   "eslintConfig": {
     "extends": [
